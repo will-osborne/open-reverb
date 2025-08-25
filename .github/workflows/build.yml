@@ -1,0 +1,62 @@
+name: Build Open Reverb
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libasound2-dev libx11-dev libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Package Windows build
+      run: |
+        mkdir -p dist/windows
+        cp target/debug/open-reverb-server.exe dist/windows/
+        cp target/debug/open-reverb-client.exe dist/windows/
+    - name: Upload Windows build
+      uses: actions/upload-artifact@v3
+      with:
+        name: open-reverb-windows
+        path: dist/windows
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Package macOS build
+      run: |
+        mkdir -p dist/macos
+        cp target/debug/open-reverb-server dist/macos/
+        cp target/debug/open-reverb-client dist/macos/
+    - name: Upload macOS build
+      uses: actions/upload-artifact@v3
+      with:
+        name: open-reverb-macos
+        path: dist/macos

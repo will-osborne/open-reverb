@@ -1,0 +1,36 @@
+[package]
+name = "open-reverb-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+open-reverb-common = { path = "../open-reverb-common" }
+tokio = { version = "1", features = ["full"] }
+egui = "0.23"
+eframe = "0.23"
+egui_extras = { version = "0.23", features = ["image"] }
+image = "0.24"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+uuid = { version = "1.3", features = ["v4", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+directories = "5.0"
+chrono = "0.4"
+crossbeam-channel = "0.5"
+once_cell = "1.18"
+parking_lot = "0.12"
+rfd = "0.11" # File dialog
+# Audio input/output - disabled by default, optional
+cpal = { version = "0.13", optional = true }
+dasp_sample = "0.11" # Audio sample conversion
+rb = "0.4" # Ring buffer for audio
+gstreamer = { version = "0.20", optional = true, features = ["v1_18"] } # Video/screen capture
+gstreamer-app = { version = "0.20", optional = true }
+gstreamer-video = { version = "0.20", optional = true }
+
+[features]
+default = []
+video = ["gstreamer", "gstreamer-app", "gstreamer-video"]
+audio = ["cpal"]
